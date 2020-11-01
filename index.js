@@ -13,10 +13,14 @@ let options = {
                 ,useNewUrlParser: true,useUnifiedTopology: true
               }; 
 
-//db connection      
+//db connection   
+try{   
 mongoose.connect('mongodb://localhost:27017/XD', options);
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
+}catch(e){
+    throw(e);
+}
 
 //don't show the log when it is test
 if(config.util.getEnv('NODE_ENV') !== 'test') {

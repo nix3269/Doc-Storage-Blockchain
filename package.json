@@ -6,6 +6,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nix3269/TYProject.git"
+  },"scripts": {
+    "start":"node index.js",
+    "test":"mocha"
   },
   "author": "Nix Correia",
   "license": "UNLICENSED",
