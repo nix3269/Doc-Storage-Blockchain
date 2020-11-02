@@ -1,7 +1,8 @@
 const Lic = require('../models/license.js');
 let mongoose = require('mongoose');
 let Block = require('../models/licenseBlock');
-const keygen = require('../models/Keygen')
+let latest = require('../models/latesthash');
+const keygen = require('../models/Keygen');
 const blockid = "5f9d3d7e6184971f84380ea0"
 // let license = require('../models/license');
 /*
@@ -9,36 +10,27 @@ const blockid = "5f9d3d7e6184971f84380ea0"
  */
 function createlicense(req, res) {
     try {
-        let lic = new Lic(req.query.name, req.query.DOB, req.query.toAddress, req.query.Expiry, req.query.privkey);
-        obj = { License: lic, hash: lic.calculateHash(), fromAddress: req.query.fromAddress, toAddress: req.query.toAddress, prev_hash: getlatest(res) };
-        var newBlock = new Block(obj);
-        newBlock.save((err, block) => {
-            if (err) {
-                res.json(err);
-            }
-            else { //If no errors, send it back to the client
-                updatelatest(block.hash);
-                res.json({ message: "Block successfully added!", block });
-            }
+        latest.findOne({ ide: 1 }, (err, block) => {
+            let prev_hash1 = block.latesthash;
+            let lic = new Lic(req.query.name, req.query.DOB, req.query.toAddress, req.query.Expiry, req.query.privkey);
+            obj = { License: lic, hash: lic.calculateHash(), fromAddress: req.query.fromAddress, toAddress: req.query.toAddress, prev_hash: prev_hash1 };
+            var newBlock = new Block(obj);
+            newBlock.save((err, block) => {
+                if (err) {
+                    res.json(err);
+                }
+                else { //If no errors, send it back to the client
+                    latest.updateOne({ ide: 1 }, { latesthash: block.hash }, (err, op) => {
+                        if (err) { res.json({ message: "Latest hash could not be updated" }); }
+                        else { res.json({ message: "Block successfully added!", block }); }
+                    });
+                }
+            });
         });
+
     } catch (e) {
         res.send(e);
     }
-
-}
-
-function getlatest(res) {
-    Block.findById(blockid, (err, block) => {
-        if (err) res.send(err);
-        if (block == null || block == "") res.json({ message: "Latest hash Not found" });
-        return block.latesthash;
-    });
-}
-
-function updatelatest(hash) {
-    Block.updateOne({ _id: blockid }, { latesthash: hash }, (err, block) => {
-        if (err) console.log(err);
-    });
 }
 
 function getBlock(req, res) {
@@ -50,7 +42,7 @@ function getBlock(req, res) {
             //If no errors, send it back to the client
         } else {
             try {
-                b = new Lic(block.License.name, block.License.DOB, block.License.Address, block.License.Expiry, "knknksnksn");
+                b = new Lic(block.License.name, block.License.DOB, block.License.Address, block.License.Expiry, "Placeholder");
                 b.signature = block.License.signature;
                 if (b.SignatureisValid) {
                     res.json(b);

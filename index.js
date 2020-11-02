@@ -39,7 +39,7 @@ app.get("/", (req, res) => res.json({message:"Welcome to our website"}));
 app.route("/License")
     .post(License.createlicense)
     .get(License.getBlock)
-    .post(License.updateBlock);
+    .put(License.updateBlock);
 
 app.listen(port);
 console.log("Listening on port " + port);
