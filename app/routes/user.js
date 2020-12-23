@@ -1,14 +1,22 @@
 let mongoose = require("mongoose");
-let Admin = require('../model/admin');
+let User = require('../model/user');
 
-function createAdmin(req, res) {
+function getUser(req, res) {
+    let query = User.find({});
+    query.exec((err, doc) => {
+      if (err) res.send(err);
+      res.json(doc);
+    });
+  }
+  
+  function createUser(req, res) {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
       console.log(errors);
       return res.status(422).json({ errors: errors.array() })
     }
-    var newAdmin = new Admin(req.body);
-    newAdmin.save((err, ntype) => {
+    var newUser = new User(req.body);
+    newUser.save((err, ntype) => {
       if (err) {
         res.status(422).json({ msg: message.ERROR.UNEXPECTED_ERR, errors });
         res.json(err);
@@ -16,18 +24,19 @@ function createAdmin(req, res) {
         res.json({ msg: message.SUCCESS.DOCUMENT_CREATED, obj: ntype });
       }
     });
+  
   }
-   
-  function updateAdmin(req, res) {
+  
+  function updateUser(req, res) {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() })
     }
     var Ref = req.body.ref;
-    Admin.findOne({ A_id: Ref }, function (err, doc) {
+    User.findOne({ u_id: Ref }, function (err, doc) {
       var myquery = doc;
       var newvalues = { $set: req.body };
-      Admin.updateOne(myquery, newvalues, function (err, obj) {
+      User.updateOne(myquery, newvalues, function (err, obj) {
         if (err) {
           res.status(422).json({ msg: message.error.UNEXPRECTED_ERR, error });
           res.json(err);
@@ -36,15 +45,16 @@ function createAdmin(req, res) {
         }
       });
     });
+  
   }
-
-  function deleteAdmin(req, res) {
+  
+  function deleteUser(req, res) {
     const errors = validationResult(req)
       if (!errors.isEmpty()) {
           return res.status(422).json({ errors: errors.array() })
       }
       var ref = req.body.ref;
-      Admin.deleteOne({ A_id: ref }, function (err, obj) {
+      User.deleteOne({ u_id: ref }, function (err, obj) {
         if (err) {
               res.status(422).json({ msg: message.error.UNEXPRECTED_ERR, error });
               res.json(err);
@@ -53,4 +63,4 @@ function createAdmin(req, res) {
           }
       });
   }
-  module.exports = { updateAdmin, createAdmin, deleteAdmin };
+  module.exports = { updateUser, createUser, deleteUser, getUser };
