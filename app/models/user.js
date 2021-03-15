@@ -1,11 +1,11 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-let short = require("short-uuid");
+//let short = require("short-uuid");
 
 
 let UserSchema = new Schema(
     {
-        u_id :{type: String,default:short.generate()},
+       // u_id :{type: String,default:short.generate()},
         u_name :{type : String,required:true},
         pass :{type : String,required:true},
         privatekey:{type : String, required:true},
