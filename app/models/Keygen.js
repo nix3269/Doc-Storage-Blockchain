@@ -11,5 +11,8 @@ const genFromPri = (key) => {
     const key1 = ec.keyFromPrivate(key, 'hex');
     return(key1);
 }
+
+//console.log(ec.genKeyPair().getPublic('hex'));
+
 exports.genkey = genkey;
 exports.genFromPri = genFromPri;

@@ -6,6 +6,7 @@ let bodyParser = require('body-parser');
 let port = 8080;
 let License = require('./app/routes/License');
 let admin = require('./app/routes/admin');
+let user = require('./app/routes/user');
 let config = require('config'); //we load the db location from the JSON files
 //db options
 let options = { 
@@ -42,6 +43,10 @@ app.route("/License")
     .get(License.getBlock)
     .put(License.updateBlock);
 
+app.route("/user")
+    .post(user.createUser)
+    .get(user.getUser)
+    .put(user.updateUser);
 
 app.route("/admin")
     .post(admin.createAdmin)
