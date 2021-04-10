@@ -1,5 +1,5 @@
 let crypto = require('crypto');
-const keygen = require('../models/Keygen')
+const keygen = require('../models/Keygen');
 class license {
 
     constructor(name,DOB,Address,Expiry,signature){
