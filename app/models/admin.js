@@ -16,11 +16,6 @@ let AdminSchema = new Schema(
         collection:'admin',
     }
 );
-AdminSchema.statics ={
-    isValid(admin){
-        return this.find({})
-    }
-}
 
 const admin = mongoose.model('admin',AdminSchema)
 module.exports = admin;
