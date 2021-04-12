@@ -28,11 +28,5 @@ let UserSchema = new Schema(
         collection: 'user',
     }
 );
-UserSchema.statics = {
-    isValid(user) {
-        return this.find({})
-    }
-}
 
-const user = mongoose.model('user', UserSchema);
-module.exports = user;
+module.exports =  mongoose.model('user', UserSchema);
