@@ -13,14 +13,12 @@ let UserSchema = new Schema(
         publickey: { type: String, default: key.getPublic('hex') },
         privatekey: { type: String, default: key.getPrivate('hex') },
         hashs: {
-
-            hash1: { type: String, required: true },
-            hash2: { type: String, required: true },
-            hash3: { type: String, required: true },
+            hash1: { type: String, default: "0" },
+            hash2: { type: String, default: "0" },
+            hash3: { type: String, default: "0" },
             // hash4 : {type: string,required: true},
             // hash5 : {type: string,required : true},
             // hash6 : {type: string,required :true},
-
         }
     },
     {

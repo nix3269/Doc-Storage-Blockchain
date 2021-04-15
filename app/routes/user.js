@@ -1,9 +1,5 @@
-let mongoose = require("mongoose");
 let User = require('../models/user');
-const keygen = require('../models/Keygen');
 const US = require('../models/userclass');
-let latest = require('../models/latesthash');
-let Block = require('../models/licenseBlock');
 
 function getUser(req, res) {
   let query = User.find({});
@@ -14,40 +10,31 @@ function getUser(req, res) {
 }
 
 function createUser(req, res) {
-  const errors = validationResult(req);
+  // const errors = validationResult(req);
   let userr = new US(req.query.u_name, req.query.pass, req.query.u_phone, {});
-  obj = { User: userr, hash: userr.calculateHash(), u_name: req.query.u_name, u_phone: req.query.u_phone };
-  var newBlock = new Block(obj);
+  obj = { hash: userr.calculateHash(), u_name: req.query.u_name, u_phone: req.query.u_phone ,pass: req.query.pass};
+  var newBlock = new User(obj);
   newBlock.save((err, block) => {
     if (err) {
-      message = err;
+      res.send(err);
     }
     else {
-      latest.updateOne({ ide: 1 }, { latesthash: block.hash }, (err, op) => {
-        if (err) { res.send({ message: "Latest hash could not be updated" }); }
-        else { res.send({ message: "Block successfully added!", block }); }
-      });
+      res.send({message:"User created succesfuly",block});
     }
   });
 }
 function updateUser(req, res) {
-  const errors = validationResult(req)
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() })
-  }
-  var Ref = req.body.ref;
-  User.findOne({ u_id: Ref }, function (err, doc) {
-    var myquery = doc;
-    var newvalues = { $set: req.body };
-    User.updateOne(myquery, newvalues, function (err, obj) {
-      if (err) {
-        res.status(422).json({ msg: message.error.UNEXPRECTED_ERR, error });
-        res.json(err);
-      } else {
-        res.json({ msg: message.SUCCESS.DOCUMENT_CREATED, obj: ntype });
-      }
+  user.findOne({hash: req.query.userhash},(err,x)=>{
+    if (!x){
+        res.send({message: "Cannot find user!"});
+    }
+    let userr = new US(x.u_name, x.pass, x.u_phone, hshs);
+    userr.setvals();
+    user.updateOne({hash: req.query.userhash},{hash : userr.calculateHash(), u_name: userr.u_name, u_phone: userr.u_phone, pass: userr.pass},(err,userres)=>{
+        if (err) { res.send({ message: "User could not be updated", Err : err }); }
+        else { res.send({ message: "User Updated successfully !"}); }
     });
-  });
+});
 
 }
 

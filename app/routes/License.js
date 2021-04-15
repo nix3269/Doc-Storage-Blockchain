@@ -1,17 +1,15 @@
 const Lic = require('../models/license.js');
-let mongoose = require('mongoose');
 let latest = require('../models/latesthash');
-const keygen = require('../models/Keygen');
-// let license = require('../models/license');
-/*
- * POST /book to save a new book.
- */
+let user = require("../models/user");
+let Block = require("../models/licenseBlock");
+const US = require('../models/userclass');
+
 function createlicense(req, res) {
     try {
         latest.findOne({ ide: 1 }, (err, block) => {
             let prev_hash1 = block.latesthash;
-            let lic = new Lic(req.query.name, req.query.DOB, req.query.toAddress, req.query.Expiry, req.query.privkey);
-            obj = { License: lic, hash: lic.calculateHash(), fromAddress: req.query.fromAddress, toAddress: req.query.toAddress, prev_hash: prev_hash1 };
+            let lic = new Lic(req.query.name, req.query.DOB, req.query.Address, req.query.Expiry, req.query.privatekey, req.query.userhash);
+            obj = { License: lic, hash: lic.calculateHash(), fromAddress: req.query.fromAddress, toAddress: req.query.privatekey, prev_hash: prev_hash1 };
             var newBlock = new Block(obj);
             newBlock.save((err, block) => {
                 if (err) {
@@ -20,19 +18,28 @@ function createlicense(req, res) {
                 else { //If no errors, send it back to the client
                     latest.updateOne({ ide: 1 }, { latesthash: block.hash }, (err, op) => {
                         if (err) { res.send({ message: "Latest hash could not be updated" }); }
-                        else { res.send({ message: "Block successfully added!", block }); }
+                    });
+                    user.findOne({hash: req.query.userhash},(err,x)=>{
+                        if (!x){
+                            res.send({message: "Cannot find user!"});
+                        }
+                        hshs=x.hashs;
+                        hshs.hash1=block.hash;
+                        let userr = new US(x.u_name, x.pass, x.u_phone, hshs);
+                        user.updateOne({hash: req.query.userhash},{hash : userr.calculateHash(), hashs: hshs},(err,userres)=>{
+                            if (err) { res.send({ message: "License hash could not be updated in user" }); }
+                            else { res.send({ message: "License Hash successfully added to User!", block,userres }); }
+                        });
                     });
                 }
             });
         });
-
     } catch (e) {
         res.send(e);
     }
 }
 
 function getBlock(req, res) {
-    let message;
     if (!req.query.lichash) {
         res.send({ message: "Licence Hash required" });
     }
@@ -92,14 +99,32 @@ function updateBlock(req, res) {
                         if (req.query.Expiry) {
                             b.Expiry = req.query.Expiry;
                         }
-                        b.signature = b.signTransaction(keygen.genFromPri(req.query.privkey));
-                        Block.updateOne(block, { License: b }, (err, block2) => {
-                            if (err) {
-                                res.send(err);
-                            }
-                            else {
-                                res.send(block2);
-                            }
+                        latest.findOne({ ide: 1 }, (err, block) => {
+                            let prev_hash1 = block.latesthash;
+                            obj = { License: b, hash: b.calculateHash(), fromAddress: req.query.fromAddress, toAddress: block.privatekey, prev_hash: prev_hash1 };
+                            var newBlock = new Block(obj);
+                            newBlock.save((err, block) => {
+                                if (err) {
+                                    res.send(err);
+                                }
+                                else { //If no errors, send it back to the client
+                                    latest.updateOne({ ide: 1 }, { latesthash: block.hash }, (err, op) => {
+                                        if (err) { res.send({ message: "Latest hash could not be updated" }); }
+                                    });
+                                    user.findOne({hash: req.query.userhash},(err,x)=>{
+                                        if (!x){
+                                            res.send({message: "Cannot find user!"});
+                                        }
+                                        hshs=x.hashs;
+                                        hshs.hash1=block.hash;
+                                        let userr = new US(x.u_name, x.pass, x.u_phone, hshs);
+                                        user.updateOne({hash: req.query.userhash},{hash : userr.calculateHash(), hashs: hshs},(err,userres)=>{
+                                            if (err) { res.send({ message: "License hash could not be updated in user" }); }
+                                            else { res.send({ message: "License Hash successfully added to User!", block,userres }); }
+                                        });
+                                    });
+                                }
+                            });
                         });
                     } catch (e) {
                         res.send(e);
@@ -110,7 +135,7 @@ function updateBlock(req, res) {
     }
 }
 function blockisValid(block) {
-    newblock = new Lic(block.License.name, block.License.DOB, block.License.Address, block.License.Expiry, "Placeholder");
+    newblock = new Lic(block.License.name, block.License.DOB, block.License.Address, block.License.Expiry, '',block.user);
     newblock.signature = block.License.signature;
     if (newblock.SignatureisValid()) {
         return (newblock.calculateHash() == block.hash);
