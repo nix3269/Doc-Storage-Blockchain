@@ -26,4 +26,4 @@ class User{
         return(sig.toDER('hex'));
     }
 }
-module.exports=userclass;
+module.exports=User;

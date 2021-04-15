@@ -1,5 +1,5 @@
 let mongoose = require("mongoose");
-let User = require('../model/user');
+let User = require('../models/user');
 const keygen = require('../models/Keygen');
 const US = require('../models/userclass');
 let latest = require('../models/latesthash');
@@ -14,30 +14,22 @@ function getUser(req, res) {
 }
 
 function createUser(req, res) {
-  const errors = validationResult(req)
-  let userr = new US(req.query.u_name,req.query.pass,req.query.u_phone,{});
-  obj = { User: userr, hash: userr.calculateHash(),u_name: req.query.u_name,u_phone: req.query.u_phone};
+  const errors = validationResult(req);
+  let userr = new US(req.query.u_name, req.query.pass, req.query.u_phone, {});
+  obj = { User: userr, hash: userr.calculateHash(), u_name: req.query.u_name, u_phone: req.query.u_phone };
   var newBlock = new Block(obj);
-            newBlock.save((err, block) => {
-                if (err) {
-                    message = err;
-                }
-                else{
-                  latest.updateOne({ ide: 1 }, { latesthash: block.hash }, (err, op) => {
-                    if (err) { res.send({ message: "Latest hash could not be updated" }); }
-                    else { res.send({ message: "Block successfully added!", block }); }
-                } );
-
-
-
-  try {
-
-  } catch (e) {
-    res.send(e);
-  }
-
+  newBlock.save((err, block) => {
+    if (err) {
+      message = err;
+    }
+    else {
+      latest.updateOne({ ide: 1 }, { latesthash: block.hash }, (err, op) => {
+        if (err) { res.send({ message: "Latest hash could not be updated" }); }
+        else { res.send({ message: "Block successfully added!", block }); }
+      });
+    }
+  });
 }
-
 function updateUser(req, res) {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
@@ -60,6 +52,6 @@ function updateUser(req, res) {
 }
 
 function deleteUser(req, res) {
- 
+
 }
 module.exports = { updateUser, createUser, deleteUser, getUser };

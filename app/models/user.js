@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 let crypto = require('crypto');
 const keygen = require('../models/Keygen');
-
+const key = keygen.genkey();
 let UserSchema = new Schema(
     {
         // u_id :{type: String,default:short.generate()},
@@ -10,13 +10,13 @@ let UserSchema = new Schema(
         pass: { type: String, required: true },
         u_phone: { type: Number, required: true },
         hash: {type:String, required:true},
-        publickey: { type: String, default: keygen.genkey.getPublic('hex') },
-        privatekey: { type: String, default: keygen.genkey.getPrivate('hex') },
+        publickey: { type: String, default: key.getPublic('hex') },
+        privatekey: { type: String, default: key.getPrivate('hex') },
         hashs: {
 
-            hash1: { type: string, required: true },
-            hash2: { type: string, required: true },
-            hash3: { type: string, required: true },
+            hash1: { type: String, required: true },
+            hash2: { type: String, required: true },
+            hash3: { type: String, required: true },
             // hash4 : {type: string,required: true},
             // hash5 : {type: string,required : true},
             // hash6 : {type: string,required :true},

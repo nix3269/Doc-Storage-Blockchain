@@ -9,7 +9,7 @@ let AdminSchema = new Schema(
     //    A_id : {type:String,default:short.generate()},
         pass :{type : String,required:true},
       //  privatekey:{type : String, required:true},
-        publickey:{type : String, default: keygen.genkey.getPublic('hex')},
+        publickey:{type : String, default: keygen.genkey().getPublic('hex')},
     },
     {
         versionKey:false,

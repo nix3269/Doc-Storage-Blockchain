@@ -1,5 +1,5 @@
 let mongoose = require("mongoose");
-let Admin = require('../model/admin');
+let Admin = require('../models/admin');
 
 function createAdmin(req, res) {
     const errors = validationResult(req)
