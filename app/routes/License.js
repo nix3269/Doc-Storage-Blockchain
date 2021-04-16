@@ -99,9 +99,9 @@ function updateBlock(req, res) {
                         if (req.query.Expiry) {
                             b.Expiry = req.query.Expiry;
                         }
-                        latest.findOne({ ide: 1 }, (err, block) => {
-                            let prev_hash1 = block.latesthash;
-                            obj = { License: b, hash: b.calculateHash(), fromAddress: req.query.fromAddress, toAddress: block.privatekey, prev_hash: prev_hash1 };
+                        latest.findOne({ ide: 1 }, (err, blo) => {
+                            let prev_hash1 = blo.latesthash;
+                            obj = { License: b, hash: b.calculateHash(), fromAddress: req.query.fromAddress, toAddress: block.toAddress, prev_hash: prev_hash1 };
                             var newBlock = new Block(obj);
                             newBlock.save((err, block) => {
                                 if (err) {
