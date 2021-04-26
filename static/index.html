@@ -1,0 +1,39 @@
+<html>
+
+<head>
+    <title>Smart card</title>
+    <script src="http://localhost:8080/assets/jquery"></script>
+    <script src="http://localhost:8080/assets/p5"></script>
+    <script src="http://localhost:8080/assets/p5dom"></script>
+    <script>
+        function runscr() {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var obj = JSON.parse(this.responseText);
+                    background(img);
+                    fill(0);
+                    textSize(10);
+                    text(obj.name, 110, 466);
+                    text(obj.DOB, 111, 479);
+                    text(obj.Address, 120, 492);
+                }
+            };
+            xmlhttp.open("GET", "License?lichash=" + $("#lichash").val(), true);
+            xmlhttp.send();
+        }
+    </script>
+
+</head>
+
+<body>
+    <form>
+        <label>Enter License Hash</label>
+        <input id="lichash" placeholder="License hash">
+        <button type="button" onclick="runscr()">Print License</button>
+    </form>
+    <button onclick="save()">Save Image</button>
+    <script src="http://localhost:8080/assets/sketch"></script>
+</body>
+
+</html>

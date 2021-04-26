@@ -13,7 +13,7 @@ function createlicense(req, res) {
             var newBlock = new Block(obj);
             newBlock.save((err, block) => {
                 if (err) {
-                    message = err;
+                    res.send(err);
                 }
                 else { //If no errors, send it back to the client
                     latest.updateOne({ ide: 1 }, { latesthash: block.hash }, (err, op) => {
