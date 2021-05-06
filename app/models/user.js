@@ -12,6 +12,7 @@ let UserSchema = new Schema(
         hash: {type:String, required:true},
         publickey: { type: String, default: key.getPublic('hex') },
         privatekey: { type: String, default: key.getPrivate('hex') },
+        createdAt: {type: Date, default: Date.now()},
         hashs: {
             hash1: { type: String, default: "0" },
             hash2: { type: String, default: "0" },

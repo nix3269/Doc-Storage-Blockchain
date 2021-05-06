@@ -6,6 +6,8 @@ let bodyParser = require('body-parser');
 let port = 8080;
 var path = require('path');
 let License = require('./app/routes/License');
+let Aadhar = require("./app/routes/Aadhar")
+let Birth = require("./app/routes/Birth")
 let admin = require('./app/routes/admin');
 let user = require('./app/routes/user');
 let config = require('config'); //we load the db location from the JSON files
@@ -36,34 +38,30 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
 app.use(bodyParser.json({ type: 'application/json' }));
-var optionsPaths = {
-    root: path.join(__dirname)
-};
-app.get('/', function (req, res) {
-    res.sendFile("static/index.html", optionsPaths, function (err) { if (err) { next(err); } });
-});
+var optionsPaths = { root: path.join(__dirname) };
+//Serving Files
+app.get('/', function (req, res) { res.sendFile("static/index.html", optionsPaths, function (err) { if (err) { next(err); } }); });
+app.get('/assets/p5', function (req, res) { res.sendFile("static/p5.js", optionsPaths, function (err) { if (err) { next(err); } }); });
+app.get('/assets/p5dom', function (req, res) { res.sendFile("static/p5.dom.js", optionsPaths, function (err) { if (err) { next(err); } }); });
+app.get('/assets/sketch', function (req, res) { res.sendFile("static/sketch.js", optionsPaths, function (err) { if (err) { next(err); } }); });
+app.get('/assets/template', function (req, res) { res.sendFile("static/assets/aadhar.png", optionsPaths, function (err) { if (err) { next(err); } }); });
+app.get('/assets/jquery', function (req, res) { res.sendFile("static/jquery-3.6.0.js", optionsPaths, function (err) { if (err) { next(err); } }); });
 
-app.get('/assets/p5', function (req, res) {
-    res.sendFile("static/p5.js", optionsPaths, function (err) { if (err) { next(err); } });
-});
-
-app.get('/assets/p5dom', function (req, res) {
-    res.sendFile("static/p5.dom.js", optionsPaths, function (err) { if (err) { next(err); } });
-});
-
-app.get('/assets/sketch', function (req, res) {
-    res.sendFile("static/sketch.js", optionsPaths, function (err) { if (err) { next(err); } });
-});
-app.get('/assets/template', function (req, res) {
-    res.sendFile("static/assets/aadhar.png", optionsPaths, function (err) { if (err) { next(err); } });
-});
-app.get('/assets/jquery', function (req, res) {
-    res.sendFile("static/jquery-3.6.0.js", optionsPaths, function (err) { if (err) { next(err); } });
-});
+//Serving APIS
 app.route("/License")
     .post(License.createlicense)
     .get(License.getBlock)
     .put(License.updateBlock);
+
+app.route("/Aadhar")
+    .post(Aadhar.createBlock)
+    .get(Aadhar.getBlock)
+    .put(Aadhar.updateBlock);
+
+app.route("/Birth")
+    .post(Birth.createBlock)
+    .get(Birth.getBlock)
+    .put(Birth.updateBlock);
 
 app.route("/user")
     .post(user.createUser)
