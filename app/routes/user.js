@@ -24,13 +24,13 @@ function createUser(req, res) {
   });
 }
 function updateUser(req, res) {
-  user.findOne({ hash: req.query.userhash }, (err, x) => {
+  User.findOne({ hash: req.query.userhash }, (err, x) => {
     if (!x) {
       res.send({ message: "Cannot find user!" });
     }
     let userr = new US(x.u_name, x.pass, x.u_phone, hshs);
     userr.setvals(req.query.u_name, req.query.pass, req.query.u_phone);
-    user.updateOne({ hash: req.query.userhash }, { hash: userr.calculateHash(), u_name: userr.u_name, u_phone: userr.u_phone, pass: userr.pass }, (err, userres) => {
+    User.updateOne({ hash: req.query.userhash }, { hash: userr.calculateHash(), u_name: userr.u_name, u_phone: userr.u_phone, pass: userr.pass }, (err, userres) => {
       if (err) { res.send({ message: "User could not be updated", Err: err }); }
       else { res.send({ message: "User Updated successfully !" }); }
     });
@@ -40,28 +40,32 @@ function updateUser(req, res) {
 
 function deleteUser(req, res) {
   if (req.query.userhash) {
-    user.deleteOne({ hash: req.query.userhash }, (err, x) => {
-      if(err){
-        res.send({message:"Error occured",ERR: err});
+    User.deleteOne({ hash: req.query.userhash }, (err, x) => {
+      if (err) {
+        res.send({ message: "Error occured", ERR: err });
       }
-      res.send({message: "Sucessfully deleted user"})
+      res.send({ message: "Sucessfully deleted user" })
     });
-  }else{
-    res.send({message:"User not found"})
+  } else {
+    res.send({ message: "User not found" })
   }
 }
 
-function getaUser(){
+function getaUser(req,res) {
+  let query = {};
   if (req.query.userhash) {
-    user.findOne({ hash: req.query.userhash }, (err, x) => {
-      if(err){
-        res.send({message:"Error occured",ERR: err});
-      }
-      if(!x) res.send({message: "User not found"});
-      res.send(x);
-    });
-  }else{
-    res.send({message:"Required parameter not entered"})
+    query = { hash: req.query.userhash }
+  } else if (req.query.u_phone) {
+    query = { hash: req.query.u_phone }
+  } else {
+    res.send({ message: "Required parameter not entered" })
   }
+  User.findOne(query, (err, x) => {
+    if (err) {
+      res.send({ message: "Error occured", ERR: err });
+    }
+    if (!x) res.send({ message: "User not found" });
+    res.send(x);
+  });
 }
 module.exports = { updateUser, createUser, deleteUser, getUser, getaUser };

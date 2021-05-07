@@ -1,0 +1,380 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.site-header {
+    width: 100%;
+    height: 100vh;
+    background: #0f8a9d;
+    background: linear-gradient(115deg, #56d8e4 10%, #9f01ea 90%);
+}
+
+nav {
+    width: 100%;
+    height: 100px;
+    /*background-color:  red;*/
+    display: flex;
+    color: white;
+}
+
+.logo {
+    width: 50%;
+    height: 100px;
+}
+
+.logo img {
+    line-height: 100px;
+    padding-left: 50px;
+    width: 270px;
+    margin-top: 30px;
+}
+
+.menu {
+    width: 50%;
+    height: 100px;
+}
+
+.menu ul {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.menu ul li {
+    list-style: none;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 3px solid transparent;
+    padding: 10PX;
+}
+
+section {
+    display: flex;
+}
+
+.leftside {
+    width: 45%;
+    height: auto;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.leftside img {
+    width: 500px;
+}
+
+.leftside img {
+    animation-name: floating;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    margin-left: 110px;
+    margin-top: 60px;
+}
+
+@keyframes floating {
+    0% {
+        transform: translate(0, 0px);
+    }
+    50% {
+        transform: translate(0, 15px);
+    }
+    100% {
+        transform: translate(0, -0px);
+    }
+}
+
+.rightside {
+    width: 55%;
+    height: 300px;
+    color: white;
+    text-align: center;
+    margin-top: 80px;
+    padding: 40px;
+}
+
+.rightside h1 {
+    text-align: center;
+    color: #ffffff;
+    font-size: 50px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.rightside h1 {
+    overflow: hidden;
+    /* Ensures the content is not revealed until the animation */
+    border-right: .15em solid orange;
+    /* The typwriter cursor */
+    white-space: nowrap;
+    /* Keeps the content on a single line */
+    margin: 0 auto;
+    /* Gives that scrolling effect as the typing happens */
+    letter-spacing: .15em;
+    /* Adjust as needed */
+    animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+}
+
+.rightside P {
+    animation: 2s anim-lineUp ease-out;
+}
+
+@keyframes anim-lineUp {
+    0% {
+        opacity: 0;
+        transform: translateY(80%);
+    }
+    20% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+}
+
+
+/* flipY class and keyframes*/
+
+
+/* The typing effect */
+
+@keyframes typing {
+    from {
+        width: 0
+    }
+    to {
+        width: 100%
+    }
+}
+
+
+/* The typewriter cursor effect */
+
+@keyframes blink-caret {
+    from,
+    to {
+        border-color: transparent
+    }
+    50% {
+        border-color: orange;
+    }
+}
+
+.rightside p {
+    font-size: 1.1rem;
+    padding: 30px 0;
+}
+
+.rightside button {
+    font-size: 17px;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    background: transparent;
+    border: 3px solid white;
+    border-radius: 9px 9px 9px 9px;
+    padding: 20px 35px;
+}
+
+.rightside button:hover {
+    background: white;
+    color: black;
+    transition: 1s;
+}
+
+.menu li:hover {
+    border: 3px solid transparent;
+    padding: 10PX;
+    color: black;
+    background-color: white;
+    border-radius: 7px;
+    transition: 1s;
+}
+
+.docs {
+    width: 1170px;
+    height: 90px;
+    align-items: center;
+}
+
+.docs h1 {
+    color: black;
+    font-size: 50px;
+    text-align: center;
+    margin-left: 27%;
+    margin-top: 200px;
+}
+
+.container {
+    width: 90%;
+    margin: 50px auto;
+}
+
+.heading {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 50px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-flow: wrap;
+}
+
+.card {
+    width: 20%;
+    background: #fff;
+    border: 1px solid #ccc;
+    margin-bottom: 50px;
+    transition: 0.3s;
+}
+
+.card-header {
+    text-align: center;
+    padding: 50px 10px;
+    background: linear-gradient(115deg, #56d8e4 10%, #9f01ea 90%);
+    color: #fff;
+}
+
+.card-body {
+    padding: 30px 20px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.card-body .btn {
+    display: block;
+    color: #fff;
+    text-align: center;
+    background: linear-gradient(115deg, #56d8e4 10%, #9f01ea 90%);
+    margin-top: 30px;
+    text-decoration: none;
+    padding: 10px 5px;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 40px -10px rgba(0, 0, 0, 0.25);
+}
+
+@media screen and (max-width: 1000px) {
+    .card {
+        width: 40%;
+    }
+}
+
+@media screen and (max-width: 620px) {
+    .container {
+        width: 100%;
+    }
+    .heading {
+        padding: 20px;
+        font-size: 20px;
+    }
+    .card {
+        width: 80%;
+    }
+}
+
+.container1 {
+    width: 500px;
+    max-width: 500px;
+    height: 390px;
+    background: white;
+    border-radius: 10px;
+    margin-left: 500px;
+}
+
+.container1 h2 {
+    text-align: center;
+    padding-top: 20px;
+    margin-top: 40px;
+    margin-bottom: 25px;
+    font-weight: 800;
+    font-size: 30px;
+}
+
+.container1 p {
+    text-align: center;
+    margin: 15px 20px;
+    color: rgb(82, 81, 81);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin: 0 30px;
+}
+
+form input {
+    margin: 5px 0;
+    height: 35px;
+    padding-left: 7px;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid rgb(82, 81, 81);
+    font-size: 16px;
+}
+
+form input:focus {
+    border: 2px solid black;
+}
+
+form #msg {
+    margin: 5px 0;
+    outline: none;
+    padding: 7px 7px;
+    z-index: 999;
+    resize: none;
+    border-radius: 5px;
+    border: 1px solid rgb(51, 51, 51);
+    font-size: 16px;
+}
+
+form #msg:focus {
+    border: 2px solid transparent;
+}
+
+#btn {
+    background: linear-gradient(115deg, #56d8e4 10%, #9f01ea 90%);
+    color: white;
+    font-weight: bold;
+    font-size: 17.5px;
+    height: 45px;
+    cursor: pointer;
+    transition: .3s ease;
+}
+
+#btn:hover {
+    background: linear-gradient(115deg, #56d8e4 10%, #f5e0ff 90%);
+    color: black;
+    transition: 1s;
+}
+
+.hmm {
+    background: linear-gradient(115deg, #56d8e4 10%, #9f01ea 90%);
+    display: block;
+    width: 100%;
+    height: 650px;
+    padding-top: 100px;
+}
+
+.footer {
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+}

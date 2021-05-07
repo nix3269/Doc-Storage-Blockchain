@@ -44,7 +44,7 @@ function getBlock(req, res) {
         res.send({ message: "Birth Hash required" });
     }
     else {
-        Block.findOne({ hash: req.query.docchash }, (err, block) => {
+        Block.findOne({ hash: req.query.dochash }, (err, block) => {
             if (err) {
                 res.send(err);
             }

@@ -10,6 +10,7 @@ let Aadhar = require("./app/routes/Aadhar")
 let Birth = require("./app/routes/Birth")
 let admin = require('./app/routes/admin');
 let user = require('./app/routes/user');
+let template=require("./app/models/template")
 let config = require('config'); //we load the db location from the JSON files
 //db options
 let options = {
@@ -39,13 +40,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
 app.use(bodyParser.json({ type: 'application/json' }));
 var optionsPaths = { root: path.join(__dirname) };
+app.use(express.static('static'));
 //Serving Files
 app.get('/', function (req, res) { res.sendFile("static/index.html", optionsPaths, function (err) { if (err) { next(err); } }); });
-app.get('/assets/p5', function (req, res) { res.sendFile("static/p5.js", optionsPaths, function (err) { if (err) { next(err); } }); });
-app.get('/assets/p5dom', function (req, res) { res.sendFile("static/p5.dom.js", optionsPaths, function (err) { if (err) { next(err); } }); });
-app.get('/assets/sketch', function (req, res) { res.sendFile("static/sketch.js", optionsPaths, function (err) { if (err) { next(err); } }); });
-app.get('/assets/template', function (req, res) { res.sendFile("static/assets/aadhar.png", optionsPaths, function (err) { if (err) { next(err); } }); });
-app.get('/assets/jquery', function (req, res) { res.sendFile("static/jquery-3.6.0.js", optionsPaths, function (err) { if (err) { next(err); } }); });
 
 //Serving APIS
 app.route("/License")
@@ -71,6 +68,21 @@ app.route("/user")
 app.route("/admin")
     .post(admin.createAdmin)
     .put(admin.updateAdmin)
+
+app.get("/template",function (req, res){
+    if(req.query.doctype){
+        template.findOne({Doctype: req.query.doctype},(err,block)=>{
+            if(err) res.send({message: "Error Occured",Error : err})
+            if(block){
+                res.json(block);
+            }else{
+                res.send({message: "Template for Document type not found"})
+            }
+        });
+    }else{
+        res.send({message: "Required parameter not entered"})
+    }
+})
 
 app.listen(port);
 console.log("Listening on port " + port);
