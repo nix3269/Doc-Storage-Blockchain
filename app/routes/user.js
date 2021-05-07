@@ -28,7 +28,7 @@ function updateUser(req, res) {
     if (!x) {
       res.send({ message: "Cannot find user!" });
     }
-    let userr = new US(x.u_name, x.pass, x.u_phone, hshs);
+    let userr = new US(x.u_name, x.pass, x.u_phone, x.hashs);
     userr.setvals(req.query.u_name, req.query.pass, req.query.u_phone);
     User.updateOne({ hash: req.query.userhash }, { hash: userr.calculateHash(), u_name: userr.u_name, u_phone: userr.u_phone, pass: userr.pass }, (err, userres) => {
       if (err) { res.send({ message: "User could not be updated", Err: err }); }
