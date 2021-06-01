@@ -8,31 +8,33 @@ function createBlock(req, res) {//Query is name,DOB,Address,privatekey,userhash
     try {
         latest.findOne({ ide: 2 }, (err, block) => {
             let prev_hash1 = block.latesthash;
-            let aad = new AAD(req.query.name, req.query.DOB, req.query.Address, req.query.privatekey, req.query.userhash);
-            obj = { Aadhar: aad, hash: aad.calculateHash(), fromAddress: req.query.fromAddress, toAddress: req.query.privatekey, prev_hash: prev_hash1 };
-            var newBlock = new Block(obj);
-            newBlock.save((err, block) => {
-                if (err) {
-                    res.send(err);
-                }
-                else { //If no errors, send it back to the client
-                    latest.updateOne({ ide: 2 }, { latesthash: block.hash }, (err, op) => {
-                        if (err) { res.send({ message: "Latest hash could not be updated" }); }
-                    });
-                    user.findOne({ hash: req.query.userhash }, (err, x) => {
+            user.findOne({ u_id: req.body.u_id  }, (err, x) => {
+                let aad = new AAD(req.body.name, req.body.DOB, req.body.Address, req.body.fromAddress, req.body.userhash);
+                obj = { Aadhar: aad, hash: aad.calculateHash(), fromAddress: req.body.fromAddress, toAddress: x.privatekey, prev_hash: prev_hash1 };
+                var newBlock = new Block(obj);
+                newBlock.save((err, block) => {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else { //If no errors, send it back to the client
+                        latest.updateOne({ ide: 2 }, { latesthash: block.hash }, (err, op) => {
+                            if (err) { res.send({ message: "Latest hash could not be updated" }); }
+                        });
                         if (!x) {
-                            res.send({ message: "Cannot find user!" });
+                            res.render('docform', { message: "Cannot find user!" });
                         }
                         hshs = x.hashs;
                         hshs.hash2 = block.hash;
                         let userr = new US(x.u_name, x.pass, x.u_phone, hshs);
-                        user.updateOne({ hash: req.query.userhash }, { hash: userr.calculateHash(), hashs: hshs }, (err, userres) => {
-                            if (err) { res.send({ message: "Aadhar hash could not be updated in user" }); }
-                            else { res.send({ message: "Aadhar Hash successfully added to User!", block, userres }); }
+                        user.updateOne({ hash: req.body.userhash }, { hash: userr.calculateHash(), hashs: hshs }, (err, userres) => {
+                            if (err) { res.send('docform', { message: "Aadhar hash could not be updated in user" }); }
+                            else { res.render('docform', { message: "Aadhar Hash successfully added to User!" }); }
                         });
-                    });
-                }
+
+                    }
+                });
             });
+
         });
     } catch (e) {
         res.send(e);
@@ -57,7 +59,7 @@ function getBlock(req, res) {
                         b = new AAD(block.Aadhar.name, block.Aadhar.DOB, block.Aadhar.Address, "Placeholder");
                         b.signature = block.Aadhar.signature;
                         if (b.SignatureisValid) {
-                            res.send(b);
+                            res.send(block.Aadhar);
                         } else {
                             res.send({ message: "Block has been compromised" });
                         }

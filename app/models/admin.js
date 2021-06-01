@@ -1,15 +1,16 @@
 var mongoose = require('mongoose');
 const keygen = require('../models/Keygen');
 var Schema = mongoose.Schema;
+const key = keygen.genkey();
 //let short = require("short-uuid");
 
 let AdminSchema = new Schema(
     {
-        A_name :{type:String,required:true},
+        a_name :{type:String,required:true},
     //    A_id : {type:String,default:short.generate()},
-        pass :{type : String,required:true},
-      //  privatekey:{type : String, required:true},
-        publickey:{type : String, default: keygen.genkey().getPublic('hex')},
+        a_pass :{type : String,required:true},
+       privatekey:{type : String, default: key.getPrivate('hex')},
+        publickey:{type : String, default: key.getPublic('hex')},
     },
     {
         versionKey:false,

@@ -18,23 +18,26 @@ let Admin = require('../models/admin');
 //     });
 //   }
    
-  function getAdmin(req,res) {
-    let query = Admin.find({});
-    query.exec((err, doc) => {
-      if (err){
-        res.send(err);
-      } 
-      else {
-        res.send({message:"couldnt get admin"});
-      }
-     
-    });
-  }
+  // function getAdmin(req) {
+  //   let query = Admin.find(req.body);
+  //   query.exec((err, doc) => {
+  //     if (err){
+  //       console.log("Error error error error")
+  //       return;
+
+  //     } 
+  //     if (doc){
+  //       return doc;
+  //     }else{
+  //       console.log("Error error error error")
+  //       return ;
+  //     }
+  //   });
+  // }
   
   function createAdmin(req, res) {
-    let adminn = AD(req.query.a_name,req.query.a_pass,{});
     obj = {a_name: req.query.a_name,a_pass:req.query.a_pass }
-    var newB = new admin(obj)
+    var newB = new Admin(obj)
     newB.save((err,block)=>{
       if (err) {
         res.send(err);
@@ -64,7 +67,26 @@ let Admin = require('../models/admin');
         });
       });
     }
-
+    function getAdmin(req, res) {
+      let query = {};
+      if (req.body.a_name && req.body.a_pass) {
+        query = req.body;
+        Admin.findOne(query, (err, x) => {
+          if (err) {
+            res.render('admin1',{ message: "Error occured"});
+          }else{
+          if (!x) {
+            res.render('admin1',{ message: "Wrong Credentials" });
+          }else{
+          res.render('admin2',{doc : x.publickey});
+          }
+        }
+        });
+      } else {
+        res.render('admin1',{ message: "Wrong Credentials" })
+      }
+      
+    }
   // function updateAdmin(req, res) {
   //   const errors = validationResult(req)
   //   if (!errors.isEmpty()) {
@@ -100,4 +122,4 @@ let Admin = require('../models/admin');
           }
       });
   }
-  module.exports = { updateAdmin, createAdmin, deleteAdmin };
+  module.exports = { updateAdmin, createAdmin, deleteAdmin ,getAdmin};

@@ -4,34 +4,38 @@
 
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="http://localhost:8080/css/style4.css">
+    <link rel="stylesheet" href="/css/style4.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 </head>
 
 <body>
     <div class="logo">
-        <img src="http://localhost:8080/img/img1.png">
+        <img src="/img/img1.png">
     </div>
     <div class="center">
         <div class="container">
             <div class="text">
                 Signup Form</div>
-            <form action="#">
+            <form action="/user" method="POST">
+                
                 <div class="data">
                     <label>Full Name</label>
-                    <input type="text" required>
+                    <input type="text" name="u_name" required>
+                    {{#if message}}
+                <p style="color: red;font-size: 10px">{{message}}<p>
+                        {{/if}}
                 </div>
                 <div class="data">
                     <label>Fathers name</label>
-                    <input type="text" required>
+                    <input type="text" name="fname" required>
                 </div>
                 <div class="data">
                     <label>Email if any</label>
-                    <input type="text" required>
+                    <input type="text" name="u_email" required>
                 </div>
                 <div class="data">
                     <label>Password</label>
-                    <input type="password" required>
+                    <input type="password" name="pass" required>
                 </div>
                 <div class="data">
                     <label>Re-enter Password</label>

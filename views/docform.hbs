@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<!-- Created By CodingNepal -->
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/css/style6.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#key').val(sessionStorage.getItem("Key"));
+            setval()
+        })
+        function setval() {
+            y = $("#sel")
+            switch (y.val()) {
+                case "aadhar":
+                    $('#dataform').attr("action", '/Aadhar');
+                    $('#name').css("display", 'block');
+                    $('#fname').css("display", "none");
+                    $('#mname').css("display", "none");
+                    $('#dob').css("display", "block");
+                    $('#bg').css("display", "none");
+                    $('#address').css("display", "block");
+                    $('#expiry').css("display", "none");
+                    break;
+                case 'license':
+                    $('#dataform').attr("action", '/License');
+                    $('#name').css("display", 'block');
+                    $('#fname').css("display", "none");
+                    $('#mname').css("display", "none");
+                    $('#dob').css("display", "block");
+                    $('#bg').css("display", "none");
+                    $('#address').css("display", "block");
+                    $('#expiry').css("display", "block");
+                    break;
+                case 'birth':
+                    $('#dataform').attr("action", '/Birth');
+                    $('#name').css("display", 'block');
+                    $('#fname').css("display", "block");
+                    $('#mname').css("display", "block");
+                    $('#dob').css("display", "block");
+                    $('#bg').css("display", "block");
+                    $('#address').css("display", "block");
+                    $('#expiry').css("display", "block");
+                    break;
+                default:
+                    $('#name').css("display", 'none');
+                    $('#fname').css("display", "none");
+                    $('#mname').css("display", "none");
+                    $('#dob').css("display", "none");
+                    $('#bg').css("display", "none");
+                    $('#address').css("display", "none");
+                    $('#expiry').css("display", "none");
+                    break;
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="logo">
+        <img src="/img/img1.png">
+    </div>
+    <div class="center">
+        <div class="container">
+            <div class="text">
+                Document Generator</div>
+            <form id="dataform" action="#" method="POST">
+                <div class="data">
+                    <select id="sel" name="cars" style="width: 340px;" onchange="setval()">
+                        <option value="">Select the document</option>
+                        <option value="aadhar">Aadhar card</option>
+                        <option value="license">Driving License</option>
+                        <option value="birth">Birth Certificate</option>
+                    </select>
+                </div>
+                {{#if message}}
+                <p style="margin-top:-30px; color: red;font-size: 10px">{{message}}<p>
+                        {{/if}}
+                        <div class="data" id="hash">
+                            <label>User ID</label>
+                            <input type="text" name="u_id" >
+                        </div>
+                        <div class="data" id="name">
+                            <label>Full Name</label>
+                            <input type="text" name="name" >
+                        </div>
+                        <div class="data" id="fname">
+                            <label>Fathers name</label>
+                            <input type="text" name="FName" >
+                        </div>
+                        <div class="data" id="mname">
+                            <label>Mothers Name</label>
+                            <input type="text" name="MName" >
+                        </div>
+                        <div class="data" id="dob">
+                            <label>Birthdate</label>
+                            <input type="calender" name="DOB" >
+                        </div>
+                        <div class="data" id="bg">
+                            <label>Blood group</label>
+                            <input type="text" name="blood" >
+                        </div>
+                        <div class="data" id="address">
+                            <label>Address</label>
+                            <input type="text" name="Address" >
+                        </div>
+                        <div class="data" id="expiry">
+                            <label>Expiry</label>
+                            <input type="text" name="Expiry" >
+                        </div>
+                        <div style="display: none">
+                            <input id="key" type="text" name="fromAddress">
+                        </div>
+                        <div class="btn">
+                            <div class="inner">
+                            </div>
+                            <button type="submit">Generate</button>
+                        </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

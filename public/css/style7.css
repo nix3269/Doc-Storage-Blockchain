@@ -30,11 +30,12 @@ body {
     flex-direction: column;
 }
 
-#canvas {
+.p5Canvas {
     width: 200px;
     height: 700px;
     border: 1px solid #000000;
     position: absolute;
+    top: 10px;
     z-index: 99999;
 }
 

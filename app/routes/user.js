@@ -1,5 +1,6 @@
 let User = require('../models/user');
 const US = require('../models/userclass');
+const { v4: uuidv4 } = require('uuid');
 
 function getUser(req, res) {
   let query = User.find({});
@@ -10,16 +11,16 @@ function getUser(req, res) {
 }
 
 function createUser(req, res) {
-  // const errors = validationResult(req);
-  let userr = new US(req.query.u_name, req.query.pass, req.query.u_phone, {});
-  obj = { hash: userr.calculateHash(), u_name: req.query.u_name, u_phone: req.query.u_phone, pass: req.query.pass };
+  var x = uuidv4();
+  let userr = new US(req.body.u_name, req.body.pass, req.body.u_phone, {});
+  obj = { u_id: x, hash: userr.calculateHash(), u_name: req.body.u_name, u_email: req.body.u_email, fname: req.body.fname, pass: req.body.pass };
   var newBlock = new User(obj);
   newBlock.save((err, block) => {
     if (err) {
-      res.send(err);
+      res.render('ctuser', { message: err });
     }
     else {
-      res.send({ message: "User created succesfuly", block });
+      res.render('showcard', { name: block.u_name , u_id : x});
     }
   });
 }
@@ -27,13 +28,14 @@ function updateUser(req, res) {
   User.findOne({ hash: req.query.userhash }, (err, x) => {
     if (!x) {
       res.send({ message: "Cannot find user!" });
+    } else {
+      let userr = new US(x.u_name, x.pass, x.u_phone, x.hashs);
+      userr.setvals(req.query.u_name, req.query.pass, req.query.u_phone);
+      User.updateOne({ hash: req.query.userhash }, { hash: userr.calculateHash(), u_name: userr.u_name, u_phone: userr.u_phone, pass: userr.pass }, (err, userres) => {
+        if (err) { res.send({ message: "User could not be updated", Err: err }); }
+        else { res.send({ message: "User Updated successfully !" }); }
+      });
     }
-    let userr = new US(x.u_name, x.pass, x.u_phone, x.hashs);
-    userr.setvals(req.query.u_name, req.query.pass, req.query.u_phone);
-    User.updateOne({ hash: req.query.userhash }, { hash: userr.calculateHash(), u_name: userr.u_name, u_phone: userr.u_phone, pass: userr.pass }, (err, userres) => {
-      if (err) { res.send({ message: "User could not be updated", Err: err }); }
-      else { res.send({ message: "User Updated successfully !" }); }
-    });
   });
 
 }
@@ -51,21 +53,37 @@ function deleteUser(req, res) {
   }
 }
 
-function getaUser(req,res) {
+function getaUser(req, res) {
   let query = {};
-  if (req.query.userhash) {
-    query = { hash: req.query.userhash }
-  } else if (req.query.u_phone) {
-    query = { hash: req.query.u_phone }
+  if (req.body.u_id) {
+    query = { u_id: req.body.u_id };
+    User.findOne(query, (err, x) => {
+      if (err) {
+        res.render('index', { message: "Error occured", ERR: err });
+      } else {
+        if (!x) {
+          res.render('index', { message: "User not found" });
+        } else {
+          res.render('portal', { hash1: x.hashs.hash1, hash2: x.hashs.hash2, hash3: x.hashs.hash3 });
+        }
+      }
+    });
+  } else if (req.body.u_email && req.body.pass) {
+    query = { u_email: req.body.u_email, pass: req.body.pass };
+    User.findOne(query, (err, x) => {
+      if (err) {
+        res.render('index', { message: "Error occured", ERR: err });
+      } else {
+        if (!x) {
+          res.render('index', { message: "User not found" });
+        } else {
+          res.render('portal', { hash1: x.hashs.hash1, hash2: x.hashs.hash2, hash3: x.hashs.hash3 });
+        }
+      }
+    });
   } else {
-    res.send({ message: "Required parameter not entered" })
+    res.render('index', { message: "Required parameter not entered" });
   }
-  User.findOne(query, (err, x) => {
-    if (err) {
-      res.send({ message: "Error occured", ERR: err });
-    }
-    if (!x) res.send({ message: "User not found" });
-    res.send(x);
-  });
+
 }
 module.exports = { updateUser, createUser, deleteUser, getUser, getaUser };

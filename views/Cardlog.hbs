@@ -4,22 +4,23 @@
 
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="http://localhost:8080/css/style1.css">
+    <link rel="stylesheet" href="/css/style1.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="/scripts/user.js"></script>
 </head>
 
 <body>
     <div class="logo">
-        <img src="http://localhost:8080/img/img1.png">
+        <img src="/img/img1.png">
     </div>
     <div class="center">
         <div class="container">
             <div class="text">
                 Enter Details</div>
-            <form action="#">
+            <form action="/cardlogin" method="POST">
                 <div class="data">
-                    <label>Reg. Phone</label>
-                    <input id="phone" type="text" required>
+                    <label>User-ID</label>
+                    <input id="phone" readonly="readonly" value="{{idval}}">
                 </div>
                 <div class="data">
                     <label>Password</label>
@@ -30,7 +31,7 @@
                 <div class="btn">
                     <div class="inner">
                     </div>
-                    <button type="submit" href="http://localhost:8080/client1.html">Lets go!</button>
+                    <button type="submit" >Lets go!</button>
                 </div>
             </form>
         </div>

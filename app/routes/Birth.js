@@ -8,28 +8,31 @@ function createBlock(req, res) {//Query is name,DOB,privatekey,userhash,FName,MN
     try {
         latest.findOne({ ide: 3 }, (err, block) => {
             let prev_hash1 = block.latesthash;
-            let aad = new OBJ(req.query.name, req.query.DOB, req.query.privatekey, req.query.MName, req.query.FName, req.query.userhash);
-            obj = { Birth: aad, hash: aad.calculateHash(), fromAddress: req.query.fromAddress, toAddress: req.query.privatekey, prev_hash: prev_hash1 };
-            var newBlock = new Block(obj);
-            newBlock.save((err, block) => {
-                if (err) {
-                    res.send(err);
-                }
-                else { //If no errors, send it back to the client
-                    latest.updateOne({ ide: 3 }, { latesthash: block.hash }, (err, op) => {
-                        if (err) { res.send({ message: "Latest hash could not be updated" }); }
-                    });
-                    user.findOne({ hash: req.query.userhash }, (err, x) => {
-                        if (!x) {
-                            res.send({ message: "Cannot find user!" });
+            user.findOne({ u_id: req.body.u_id }, (err, x) => {
+                if (!x) {
+                    res.render('docform', { message: "Cannot find user!" });
+                } else {
+                    let aad = new OBJ(req.body.name, req.body.DOB, req.body.fromAddress, req.body.MName, req.body.FName, req.body.userhash);
+                    obj = { Birth: aad, hash: aad.calculateHash(), fromAddress: req.body.fromAddress, toAddress: x.privatekey, prev_hash: prev_hash1 };
+                    var newBlock = new Block(obj);
+                    newBlock.save((err, block) => {
+                        if (err) {
+                            res.send(err);
                         }
-                        hshs = x.hashs;
-                        hshs.hash3 = block.hash;
-                        let userr = new US(x.u_name, x.pass, x.u_phone, hshs);
-                        user.updateOne({ hash: req.query.userhash }, { hash: userr.calculateHash(), hashs: hshs }, (err, userres) => {
-                            if (err) { res.send({ message: "Birth hash could not be updated in user" }); }
-                            else { res.send({ message: "Birth Hash successfully added to User!", block, userres }); }
-                        });
+                        else { //If no errors, send it back to the client
+                            latest.updateOne({ ide: 3 }, { latesthash: block.hash }, (err, op) => {
+                                if (err) { res.send({ message: "Latest hash could not be updated" }); return}
+                            });
+                            if (err) { res.render('docform', { message: "user hash could not be updated" });return }
+
+                            hshs = x.hashs;
+                            hshs.hash3 = block.hash;
+                            let userr = new US(x.u_name, x.pass, x.u_phone, hshs);
+                            user.updateOne({ hash: req.body.userhash }, { hash: userr.calculateHash(), hashs: hshs }, (err, userres) => {
+                                if (err) { res.render('docform', { message: "Birth hash could not be updated in user" }); }
+                                else { res.render('docform', { message: "Birth Hash successfully added to User!" }); }
+                            });
+                        }
                     });
                 }
             });
@@ -54,9 +57,9 @@ function getBlock(req, res) {
                     //If no errors, send it back to the client
                 } else {
                     try {
-                        b = new OBJ(block.Birth.name, block.Birth.DOB, block.Birth.signature,block.Birth.MName, block.Birth.FName, block.Birth.user);
+                        b = new OBJ(block.Birth.name, block.Birth.DOB, block.Birth.signature, block.Birth.MName, block.Birth.FName, block.Birth.user);
                         if (b.SignatureisValid) {
-                            res.send(b);
+                            res.send(block.Birth);
                         } else {
                             res.send({ message: "Block has been compromised" });
                         }
@@ -84,7 +87,7 @@ function updateBlock(req, res) {
                 }
                 else {
                     try {
-                        let b = new OBJ(block.Birth.name, block.Birth.DOB, block.Birth.signature,block.Birth.MName, block.Birth.FName, block.Birth.user );
+                        let b = new OBJ(block.Birth.name, block.Birth.DOB, block.Birth.signature, block.Birth.MName, block.Birth.FName, block.Birth.user);
                         if (req.query.name) {
                             b.name = req.query.name;
                         }
@@ -112,14 +115,15 @@ function updateBlock(req, res) {
                                     user.findOne({ hash: req.query.userhash }, (err, x) => {
                                         if (!x) {
                                             res.send({ message: "Cannot find user!" });
+                                        } else {
+                                            hshs = x.hashs;
+                                            hshs.hash3 = block.hash;
+                                            let userr = new US(x.u_name, x.pass, x.u_phone, hshs);
+                                            user.updateOne({ hash: req.query.userhash }, { hash: userr.calculateHash(), hashs: hshs }, (err, userres) => {
+                                                if (err) { res.send({ message: "Birth hash could not be updated in user" }); }
+                                                else { res.send({ message: "Birth Hash successfully added to User!", block, userres }); }
+                                            });
                                         }
-                                        hshs = x.hashs;
-                                        hshs.hash3 = block.hash;
-                                        let userr = new US(x.u_name, x.pass, x.u_phone, hshs);
-                                        user.updateOne({ hash: req.query.userhash }, { hash: userr.calculateHash(), hashs: hshs }, (err, userres) => {
-                                            if (err) { res.send({ message: "Birth hash could not be updated in user" }); }
-                                            else { res.send({ message: "Birth Hash successfully added to User!", block, userres }); }
-                                        });
                                     });
                                 }
                             });
@@ -133,7 +137,7 @@ function updateBlock(req, res) {
     }
 }
 function blockisValid(block) {
-    newblock = new OBJ(block.Birth.name, block.Birth.DOB, block.Birth.Address, block.Birth.signature,block.Birth.MName, block.Birth.FName, block.Birth.user);
+    newblock = new OBJ(block.Birth.name, block.Birth.DOB, block.Birth.Address, block.Birth.signature, block.Birth.MName, block.Birth.FName, block.Birth.user);
     newblock.signature = block.Birth.signature;
     if (newblock.SignatureisValid()) {
         return (newblock.calculateHash() == block.hash);

@@ -4,13 +4,15 @@ let mongoose = require('mongoose');
 let morgan = require('morgan');
 let bodyParser = require('body-parser');
 let port = 8080;
+const engines = require('consolidate');
+var hbs = require('handlebars');
 var path = require('path');
 let License = require('./app/routes/License');
 let Aadhar = require("./app/routes/Aadhar")
 let Birth = require("./app/routes/Birth")
 let admin = require('./app/routes/admin');
 let user = require('./app/routes/user');
-let template=require("./app/models/template")
+let template = require("./app/models/template")
 let config = require('config'); //we load the db location from the JSON files
 //db options
 let options = {
@@ -34,15 +36,22 @@ if (config.util.getEnv('NODE_ENV') !== 'test') {
     app.use(morgan('combined')); //'combined' outputs the Apache style LOGs
 }
 
+//Setup view engine
+app.engine('hbs', engines.handlebars);
+app.set('views', './views');
+app.set('view engine', 'hbs');
+
 //parse application/json and look for raw text                                        
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
 app.use(bodyParser.json({ type: 'application/json' }));
-var optionsPaths = { root: path.join(__dirname) };
-app.use(express.static('static'));
+
+app.use(express.static('public'));
 //Serving Files
-app.get('/', function (req, res) { res.sendFile("static/index.html", optionsPaths, function (err) { if (err) { next(err); } }); });
+app.get('/', function (req, res) {
+    res.render("index", {});
+});
 
 //Serving APIS
 app.route("/License")
@@ -67,24 +76,53 @@ app.route("/user")
 
 app.route("/admin")
     .post(admin.createAdmin)
-    .put(admin.updateAdmin)
+    .put(admin.updateAdmin);
 
-app.get("/template",function (req, res){
-    if(req.query.doctype){
-        template.findOne({Doctype: req.query.doctype},(err,block)=>{
-            if(err) res.send({message: "Error Occured",Error : err})
-            if(block){
+app.get("/adminlogin",
+    function (req, res) {
+        res.render("admin1", {});
+    });
+app.post("/adminlogin",
+    function (req, res) {
+        admin.getAdmin(req,res);
+    });
+
+app.get('/docform', function (req, res) {
+    res.render('docform', {});
+});
+
+app.get('/adminpage', function (req, res) {
+    res.render('admin2', {});
+});
+
+app.get("/cardlogin", function (req,res){
+    res.render('index',{idval: req.query.id})
+});
+
+app.post("/cardlogin", function (req,res){
+    user.getaUser(req,res);
+});
+
+app.get('/createUser', function (req, res) {
+    res.render('ctuser', {});
+});
+
+app.get("/template", function (req, res) {
+    if (req.query.doctype) {
+        template.findOne({ Doctype: req.query.doctype }, (err, block) => {
+            if (err) res.send({ message: "Error Occured", Error: err })
+            if (block) {
                 res.json(block);
-            }else{
-                res.send({message: "Template for Document type not found"})
+            } else {
+                res.send({ message: "Template for Document type not found" })
             }
         });
-    }else{
-        res.send({message: "Required parameter not entered"})
+    } else {
+        res.send({ message: "Required parameter not entered" })
     }
-})
+});
 
 app.listen(port);
 console.log("Listening on port " + port);
 
-module.exports = app; // for testing
+module.exports = app

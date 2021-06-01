@@ -3,20 +3,24 @@
 
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="http://localhost:8080/css/style7.css">
+    <link rel="stylesheet" href="/css/style7.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="/scripts/p5.dom.js"></script>
+    <script src="/scripts/p5.js"></script>
+    <script src="/scripts/sketch.js"></script>
 </head>
 
 <body>
     <div class="logo">
-        <img src="http://localhost:8080/img/img1.png">
+        <img src="/img/img1.png">
     </div>
+    <button onclick="history.back()">Back</button>
     <div class="can">
     <canvas id="myCanvas"></canvas></br>
     <div class="btn">
                     <div class="inner">
                     </div>
-                    <button type="submit">Generate</button>
+                    <button onclick="save()">Save</button>
                 </div>
     </div>
 
