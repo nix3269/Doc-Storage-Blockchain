@@ -3,6 +3,7 @@ let latest = require('../models/latesthash');
 let user = require("../models/user");
 let Block = require("../models/birthblock");
 const US = require('../models/userclass');
+let template = require("../models/template")
 
 function createBlock(req, res) {//Query is name,DOB,privatekey,userhash,FName,MName
     try {
@@ -28,7 +29,7 @@ function createBlock(req, res) {//Query is name,DOB,privatekey,userhash,FName,MN
                             hshs = x.hashs;
                             hshs.hash3 = block.hash;
                             let userr = new US(x.u_name, x.pass, x.u_phone, hshs);
-                            user.updateOne({ hash: req.body.userhash }, { hash: userr.calculateHash(), hashs: hshs }, (err, userres) => {
+                            user.updateOne({ u_id: req.body.u_id }, { hash: userr.calculateHash(), hashs: hshs }, (err, userres) => {
                                 if (err) { res.render('docform', { message: "Birth hash could not be updated in user" }); }
                                 else { res.render('docform', { message: "Birth Hash successfully added to User!" }); }
                             });
@@ -47,6 +48,7 @@ function getBlock(req, res) {
         res.send({ message: "Birth Hash required" });
     }
     else {
+      template.findOne({Doctype: 'Birth'}, (err,templat)=>{
         Block.findOne({ hash: req.query.dochash }, (err, block) => {
             if (err) {
                 res.send(err);
@@ -58,8 +60,10 @@ function getBlock(req, res) {
                 } else {
                     try {
                         b = new OBJ(block.Birth.name, block.Birth.DOB, block.Birth.signature, block.Birth.MName, block.Birth.FName, block.Birth.user);
-                        if (b.SignatureisValid) {
-                            res.send(block.Birth);
+                      let x = JSON.stringify(b);
+                      let y=JSON.stringify(templat);  
+                      if (b.SignatureisValid) {
+                            res.send('printgen',{obj:x,temp:y});
                         } else {
                             res.send({ message: "Block has been compromised" });
                         }
@@ -69,6 +73,7 @@ function getBlock(req, res) {
                 }
             }
         });
+      });
     }
 }
 
@@ -77,6 +82,7 @@ function updateBlock(req, res) {
         res.send({ message: "Birth Hash required" });
     }
     else {
+      
         Block.findOne({ hash: req.query.dochash }, (err, block) => {
             if (err) {
                 res.send(err);

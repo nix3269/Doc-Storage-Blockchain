@@ -14,21 +14,13 @@ function verify() {
 
 function loadlastobj(x, hash) {
     sessionStorage.setItem("hash",hash);
-    fetch("http://localhost:8080/" + x + "?dochash=" + hash).then(res => res.json()).then(data => {
-        if (data) {
-            sessionStorage.setItem("obj", JSON.stringify(data));
-        }
-    })
-    fetch("http://localhost:8080/template?doctype=" + x).then(res => res.json()).then(data => {
-        if (data) {
-            sessionStorage.setItem("templ", JSON.stringify(data));
-            return true;
-        }
-    })
+    
 }
 function logout(){
     if(sessionStorage.getItem('templ')){
         sessionStorage.removeItem("templ");
     }
-    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("obj");
+  sessionStorage.removeItem("id");
+  window.location.replace("/");
 }

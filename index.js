@@ -23,7 +23,7 @@ let options = {
 
 //db connection   
 try {
-    mongoose.connect('mongodb://localhost:27017/XD', options);
+    mongoose.connect('mongodb+srv://nix:'+process.env.DB_PASS+'@lock-a-doc.znnfs.mongodb.net/Lock-a-doc?retryWrites=true&w=majority');
     let db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
 } catch (e) {
@@ -96,9 +96,20 @@ app.get('/adminpage', function (req, res) {
 });
 
 app.get("/cardlogin", function (req,res){
-    res.render('index',{idval: req.query.id})
+    res.render('Cardlogin',{idval:req.query.id})
 });
 
+app.get("/printgen",function (req,res){
+  let b="";
+  let x = "";
+      if(req.query.doctype == "Aadhar"){
+        x=Aadhar.getBlock(req,res); 
+      }else if(req.query.doctype == "License"){
+        x=License.getBlock(req,res);
+      }else{
+        x=Birth.getBlock(req,res);  
+      }                                               
+});
 app.post("/cardlogin", function (req,res){
     user.getaUser(req,res);
 });

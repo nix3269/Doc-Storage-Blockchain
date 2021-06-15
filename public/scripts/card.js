@@ -3,7 +3,7 @@ let code;
 let qr = sessionStorage.getItem("id");
 function preload() {
   img = loadImage('/assets/card.png');
-  code = loadImage("https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=http://localhost:8080/cardlogin?id="+qr)
+  code = loadImage("https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://acute-sustaining-ease.glitch.me/cardlogin?id="+qr)
 }
 
 function setup() {

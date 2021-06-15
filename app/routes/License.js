@@ -3,6 +3,7 @@ let latest = require('../models/latesthash');
 let user = require("../models/user");
 let Block = require("../models/licenseBlock");
 const US = require('../models/userclass');
+let template = require("../models/template")
 
 function createlicense(req, res) {
     try {
@@ -24,7 +25,7 @@ function createlicense(req, res) {
                             hshs = x.hashs;
                             hshs.hash1 = block.hash;
                             let userr = new US(x.u_name, x.pass, x.u_phone, hshs);
-                            user.updateOne({ hash: req.body.userhash }, { hash: userr.calculateHash(), hashs: hshs }, (err, userres) => {
+                            user.updateOne({ u_id: req.body.u_id }, { hash: userr.calculateHash(), hashs: hshs }, (err, userres) => {
                                 if (err) { res.render('docform', { message: "License could not be added in user" }); }
                                 else { res.render('docform', { message: "License successfully added to User!" }); }
                             });
@@ -46,6 +47,7 @@ function getBlock(req, res) {
         res.send({ message: "Licence Hash required" });
     }
     else {
+      template.findOne({Doctype: 'License'}, (err,templat)=>{
         Block.findOne({ hash: req.query.dochash }, (err, block) => {
             if (err) {
                 res.send(err);
@@ -56,10 +58,12 @@ function getBlock(req, res) {
                     //If no errors, send it back to the client
                 } else {
                     try {
-                        b = new Lic(block.License.name, block.License.DOB, block.License.Address, block.License.Expiry, "Placeholder");
+                        let b = new Lic(block.License.name, block.License.DOB, block.License.Address, block.License.Expiry, "Placeholder");
                         b.signature = block.License.signature;
+                      let x = JSON.stringify(b);
+                      let y=JSON.stringify(templat);
                         if (b.SignatureisValid) {
-                            res.send(block.License);
+                            res.render('printgen',{obj: x,temp: y});
                         } else {
                             res.send({ message: "Block has been compromised" });
                         }
@@ -69,6 +73,7 @@ function getBlock(req, res) {
                 }
             }
         });
+      });
     }
 }
 

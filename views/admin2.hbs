@@ -16,6 +16,126 @@
             }
         })
     </script>
+  <style>
+    @media screen and (max-width: 600px){
+          .fa, .far, .fas{
+      
+      color: white;
+    }
+      .menu{
+        display:none;
+      }
+      
+      .heading a i{
+        color: white;
+      }
+      
+      
+      #lk{
+        display:none;
+      }
+      
+      .docs{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      
+      }
+      
+      .docs h1{
+        font-size: 50px;
+        margin-left: 0px;
+        margin-bottom: 200px;
+      }
+      
+      .container1{
+        margin-left: 0px;
+        width: 100%;
+      }
+      
+      .leftside img{
+        margin-left: 0px;
+        width: 100%;
+      }
+      
+      .rightside h1{
+        
+       font-size: 10px; 
+        
+      }
+      
+      .rightside p{
+        
+        font-size: 10px;
+      }
+      
+    } 
+    
+}
+        .navbar {
+            position: relative;
+        }
+  
+        .links {
+            display: none;
+        }
+    .heading a:nth-child(2) {
+
+            text-decoration: none;
+            font-size: 20px;
+            display: block;
+            padding: 7px;
+            margin-left: 150px;
+        }
+  
+        .heading a i {
+            padding: 10px;
+            display: block;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+  
+        .heading a i:hover {
+        }
+  
+        .links {
+            background-color: rgb(190, 196, 190);
+        }
+  
+        .links a {
+            color: black;
+          background-color: white;
+            padding: 5px 16px;
+            text-decoration: none;
+            font-size: 17px;
+            display: block;
+            text-align: center;
+            border-bottom: 1px solid white;
+        }
+    
+        .links a:hover {
+            background-color: black;
+            color: white;
+        }
+    .fa, .far, .fas{
+      
+      color: transparent;
+    }
+    
+    .menu ul li a{
+      color: black;
+      text-decoration: none;
+    }
+    
+    .menu ul li a: hover{
+      color: black;
+    }
+    
+    html {
+  scroll-behavior: smooth;
+}
+    </style>
 </head>
 
 <body>
@@ -25,12 +145,25 @@
             <div class="logo">
                 <img src="/img/img1.png">
             </div>
+                <div class="navbar">
+            <div class="heading">
+                <a href="#hamburger-icon" onclick="gfgMenu()">
+                    <i class="fa fa-bars"></i>
+                </a>
+            </div>
+            <div class="links">
+                <a href="">Home</a>
+                <a href="#dsds">Documents</a>
+                <a href="/createUser">Create User</a>
+                <a href="/index">Log out</a>
+            </div>
+        </div>
             <div class="menu">
                 <ul>
-                    <li>Home</li>
-                    <li>Documents</li>
+                    <li><a href="">Home</a></li>
+                    <li><a href="#dsds">Documents</a></li>
                     <li><a href="/createUser">Create User</a></li>
-                    <li>Log out</li>
+                    <li><a href="/index">Log out</a></li>
                 </ul>
             </div>
         </nav>
@@ -41,12 +174,12 @@
             <div class="rightside">
                 <h1>OUR MODERN WAY TO<br> SECURE YOUR DOCS</h1><br>
                 <p>Loc-a-Doc is a secure way for creating and storing your personal documents via world famous blockchain technology. It is considered as most secure technology in this world right now. Lock your documents now!</p>
-                <br><button>Welcome</button>
+                <br><button id="lk">Welcome</button>
             </div>
 
         </section>
 
-        <div class="docs">
+        <div class="docs" id="dsds">
             <h1>Documents</h1>
         </div>
         <div class="container">
@@ -119,7 +252,18 @@
         </div>
     </header>
 
-
+<script>
+        function gfgMenu() {
+            const GFG = document.querySelector('.links');
+  
+            if (GFG.style.display === "none") {
+                GFG.style.display = "block";
+            }
+            else {
+                GFG.style.display = "none";
+            }
+        }
+  </script>
 </body>
 
 </html>

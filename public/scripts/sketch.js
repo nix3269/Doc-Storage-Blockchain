@@ -1,6 +1,7 @@
 let img;
 let template = sessionStorage.getItem("templ");
 template = JSON.parse(template);
+console.log(template);
 function preload() {
   img = loadImage(template.src);
 }
